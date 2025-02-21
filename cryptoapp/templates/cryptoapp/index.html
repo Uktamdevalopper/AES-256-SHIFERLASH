@@ -1,0 +1,143 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kirish</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        /* Hacker-style matrix background */
+        body {
+            margin: 0;
+            overflow: hidden;
+            font-family: 'Courier New', monospace;
+        }
+
+        canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+        }
+
+        /* Glassmorphism effect */
+        .overlay {
+            background: rgba(0, 0, 0, 0.85);
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
+            text-align: center;
+            color: #00ff00;
+            width: 400px;
+        }
+
+        h1 {
+            font-weight: bold;
+            text-shadow: 0px 0px 10px #00ff00;
+            font-size: 2rem;
+        }
+
+        .btn-hacker {
+            background: #00ff00;
+            color: black;
+            font-weight: bold;
+            width: 100%;
+            border-radius: 8px;
+            padding: 12px;
+            transition: 0.3s;
+            font-size: 1.2rem;
+        }
+
+        .btn-hacker:hover {
+            background: #008000;
+            color: white;
+        }
+
+        /* Back Button */
+        .back-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 255, 0, 0.2);
+            border: 1px solid #00ff00;
+            color: #00ff00;
+            padding: 10px 15px;
+            border-radius: 5px;
+            font-size: 1rem;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: 0.3s;
+        }
+
+        .back-btn:hover {
+            background: rgba(0, 255, 0, 0.5);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Matrix Effect Background -->
+    <canvas id="matrix"></canvas>
+
+    <div class="d-flex justify-content-center align-items-center" style="height: 100vh;">
+        <div class="overlay">
+            <h1><i class="fas fa-user-secret"></i> Xush Kelibsiz</h1>
+            <p>Shifrlash yoki deshifrlash sahifasini tanlang</p>
+
+            <a href="{% url 'encrypt_view' %}" class="btn btn-hacker mt-3"><i class="fas fa-lock"></i> Shifrlash</a>
+            <a href="{% url 'decrypt_view' %}" class="btn btn-hacker mt-3"><i class="fas fa-lock-open"></i> Deshifrlash</a>
+        </div>
+    </div>
+
+    <!-- Matrix Animation Script -->
+    <script>
+        const canvas = document.getElementById("matrix");
+        const ctx = canvas.getContext("2d");
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const letters = "0123456789ABCDEF";
+        const fontSize = 16;
+        const columns = canvas.width / fontSize;
+        const drops = [];
+
+        for (let x = 0; x < columns; x++) {
+            drops[x] = 1;
+        }
+
+        function drawMatrix() {
+            ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.fillStyle = "#00FF00";
+            ctx.font = fontSize + "px Courier";
+            
+            for (let i = 0; i < drops.length; i++) {
+                const text = letters[Math.floor(Math.random() * letters.length)];
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                    drops[i] = 0;
+                }
+
+                drops[i]++;
+            }
+        }
+
+        setInterval(drawMatrix, 50);
+
+        window.addEventListener("resize", () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+    </script>
+
+</body>
+</html>
